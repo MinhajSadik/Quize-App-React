@@ -1,7 +1,14 @@
-export default function App() {
+import "../styles/App.css";
+import Nav from "./Nav";
+
+function App() {
   return (
     <div className="App">
-      <header className="App-header">Nothing</header>
+      <header className="App-header">
+        <Nav />
+      </header>
     </div>
   );
 }
+
+export default App;
