@@ -1,12 +1,13 @@
 import "../styles/App.css";
-import Nav from "./Nav";
+import Layout from "./Layout";
+import Home from "./pages/Home";
 
 function App() {
   return (
     <div className="App">
-      {/* <header className="App-header"> */}
-      <Nav />
-      {/* </header> */}
+      <Layout>
+        <Home />
+      </Layout>
     </div>
   );
 }
