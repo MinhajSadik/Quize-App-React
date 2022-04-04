@@ -4,9 +4,9 @@ import Nav from "./Nav";
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <Nav />
-      </header>
+      {/* <header className="App-header"> */}
+      <Nav />
+      {/* </header> */}
     </div>
   );
 }
