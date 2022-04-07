@@ -1,4 +1,4 @@
-import image from "../assets/react.jpeg";
+import thumb from "../assets/react.jpeg";
 import classes from "../styles/MiniPlayer.module.css";
 
 export default function MiniPlayer() {
@@ -12,7 +12,7 @@ export default function MiniPlayer() {
         {" "}
         close{" "}
       </span>
-      <img src={image} alt="Alt Tag" />
+      <img src={thumb} alt="Alt Tag" />
       <p>#23 React Hooks Bangla - React useReducer hook Bangla</p>
     </div>
   );
