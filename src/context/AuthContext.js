@@ -17,53 +17,55 @@ export function useAuth() {
 
 export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
-  const [currentUser, setCurrentUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState();
 
   useEffect(() => {
     const auth = getAuth();
-    const unSubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
       setLoading(false);
     });
-    return unSubscribe;
+
+    return unsubscribe;
   }, []);
 
-  //signup function
-  async function signUp(email, password, username) {
+  // signup function
+  async function signup(email, password, username) {
     const auth = getAuth();
     await createUserWithEmailAndPassword(auth, email, password);
 
-    //update profile
-    await updateProfile(auth.currentUser, { displayName: username });
+    // update profile
+    await updateProfile(auth.currentUser, {
+      displayName: username,
+    });
 
-    //set current user
     const user = auth.currentUser;
     setCurrentUser({
       ...user,
     });
   }
 
-  //login function
-  async function logIn(email, password) {
+  // login function
+  function login(email, password) {
     const auth = getAuth();
     return signInWithEmailAndPassword(auth, email, password);
   }
 
-  //logout function
-  async function logOut() {
+  // logout function
+  function logout() {
     const auth = getAuth();
     return signOut(auth);
   }
 
-  const values = {
+  const value = {
     currentUser,
-    signUp,
-    logIn,
-    logOut,
+    signup,
+    login,
+    logout,
   };
 
   return (
-    <AuthContext.Provider value={values}>
+    <AuthContext.Provider value={value}>
       {!loading && children}
     </AuthContext.Provider>
   );
