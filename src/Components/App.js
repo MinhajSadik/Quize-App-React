@@ -1,3 +1,4 @@
+import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { AuthProvider } from "../context/AuthContext";
 import "../styles/App.css";
@@ -18,8 +19,12 @@ function App() {
             <Route exact path="/" element={<Home />} />
             <Route exact path="/signup" element={<Signup />} />
             <Route exact path="/login" element={<Login />} />
-            <PrivateRoute exact path="/quiz" element={<Quiz />} />
-            <PrivateRoute exact path="/result" element={<Result />} />
+            <Route exact path="/quiz" element={<PrivateRoute />}>
+              <Route element={<Quiz />} />
+            </Route>
+            <Route exact path="/result" element={<PrivateRoute />}>
+              <Route element={<Result />} />
+            </Route>
           </Routes>
         </Layout>
       </AuthProvider>
