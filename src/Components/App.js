@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { AuthProvider } from "../context/AuthContext";
 import "../styles/App.css";
 import Layout from "./Layout";
@@ -16,21 +16,13 @@ function App() {
     <Router>
       <AuthProvider>
         <Layout>
-          <Routes>
-            <Route exact path="/" element={<Home />} />
-            <Route element={<PublicRoute />}>
-              <Route exact path="/signup" element={<Signup />} />
-            </Route>
-            <Route element={<PublicRoute />}>
-              <Route exact path="/login" element={<Login />} />
-            </Route>
-            <Route exact path="/quiz" element={<PrivateRoute />}>
-              <Route element={<Quiz />} />
-            </Route>
-            <Route exact path="/result" element={<PrivateRoute />}>
-              <Route element={<Result />} />
-            </Route>
-          </Routes>
+          <Switch>
+            <Route exact path="/" component={Home} />
+            <PublicRoute exact path="/signup" component={Signup} />
+            <PublicRoute exact path="/login" component={Login} />
+            <PrivateRoute exact path="/quiz" component={Quiz} />
+            <PrivateRoute exact path="/result" component={Result} />
+          </Switch>
         </Layout>
       </AuthProvider>
     </Router>

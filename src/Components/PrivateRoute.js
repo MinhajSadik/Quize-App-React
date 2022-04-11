@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Redirect, Route, Switch } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 export default function PrivateRoute({ component: Component, ...rest }) {
@@ -6,11 +6,11 @@ export default function PrivateRoute({ component: Component, ...rest }) {
 
   return currentUser ? (
     <>
-      <Routes>
+      <Switch>
         <Route {...rest}>{(props) => <Component {...props} />}</Route>
-      </Routes>
+      </Switch>
     </>
   ) : (
-    <Navigate to="/login" />
+    <Redirect to="/login" />
   );
 }
