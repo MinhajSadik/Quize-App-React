@@ -12,7 +12,7 @@ import { useEffect, useState } from "react";
 export default function useQuestions(videoID) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-  const [question, setQuestion] = useState([]);
+  const [questions, setQuestion] = useState([]);
 
   useEffect(() => {
     async function fetchQuestion() {
@@ -50,6 +50,6 @@ export default function useQuestions(videoID) {
   return {
     loading,
     error,
-    question,
+    questions,
   };
 }
