@@ -1,4 +1,5 @@
-import React, { useReducer, useState } from "react";
+import _ from "lodash";
+import React, { useEffect, useReducer, useState } from "react";
 import { useParams } from "react-router-dom";
 import useQuestions from "../../Hooks/useQuestions";
 import Answers from "../Answers";
@@ -10,9 +11,19 @@ const initialState = null;
 const reducer = (state, action) => {
   switch (action.type) {
     case "QUESTION":
-      return action.payload.forEach((question) => {
-        return question;
+      action.payload.forEach((question) => {
+        question.options.forEach((option) => {
+          option.checked = false;
+        });
       });
+      return action.payload;
+    case "ANSWER":
+      const questions = _.cloneDeep(state);
+      questions[action.questionID].options[action.optionIndex].checked =
+        action.payload;
+      return questions;
+    default:
+      return state;
   }
 };
 
@@ -22,11 +33,32 @@ export default function Quiz() {
   const { question, loading, error } = useQuestions(id);
 
   const [qna, dispatch] = useReducer(reducer, initialState);
+
+  //dispatch({ type: "QUESTION", payload: question });
+  useEffect(() => {
+    dispatch({
+      type: "QUESTION",
+      payload: question,
+    });
+  }, [question]);
+
+  function handleAnswerChange(e, index) {
+    dispatch({
+      type: "ANSWER",
+      questionID: currentQuestion,
+      optionIndex: index,
+      payload: e.target.checked,
+    });
+  }
+
   return (
     <>
-      <h1>Pick three of your favorite start wars films</h1>
+      <h1>{qna[currentQuestion].title}</h1>
       <h4>Question can have multiple answers</h4>
-      <Answers />
+      <Answers
+        options={qna[currentQuestion].options}
+        handleChange={handleAnswerChange}
+      />
       <ProgressBar />
       <MiniPlayer />
     </>
