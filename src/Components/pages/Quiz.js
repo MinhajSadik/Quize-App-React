@@ -1,6 +1,6 @@
 import { getDatabase, ref, set } from "firebase/database";
 import _ from "lodash";
-import React, { useEffect, useReducer, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import useQuestions from "../../Hooks/useQuestions";
@@ -13,16 +13,17 @@ const initialState = null;
 const reducer = (state, action) => {
   switch (action.type) {
     case "questions":
-      action.payload.forEach((question) => {
+      action.value.forEach((question) => {
         question.options.forEach((option) => {
           option.checked = false;
         });
       });
-      return action.payload;
+      return action.value;
     case "answer":
       const questions = _.cloneDeep(state);
       questions[action.questionID].options[action.optionIndex].checked =
-        action.payload;
+        action.value;
+
       return questions;
     default:
       return state;
@@ -38,11 +39,10 @@ export default function Quiz() {
   const { currentUser } = useAuth();
   const history = useHistory();
 
-  //dispatch({ type: "QUESTION", payload: question });
   useEffect(() => {
     dispatch({
       type: "questions",
-      payload: questions,
+      value: questions,
     });
   }, [questions]);
 
@@ -51,36 +51,35 @@ export default function Quiz() {
       type: "answer",
       questionID: currentQuestion,
       optionIndex: index,
-      payload: e.target.checked,
+      value: e.target.checked,
     });
   }
 
-  //handle when user clicks the next button
+  // handle when user clicks the next button to get the next question
   function nextQuestion() {
     if (currentQuestion + 1 < questions.length) {
       setCurrentQuestion((prevCurrent) => prevCurrent + 1);
     }
   }
 
-  //handle when user clicks the previous button to get back the previous question
+  // handle when user clicks the prev button to get back to the previous question
   function prevQuestion() {
     if (currentQuestion >= 1 && currentQuestion <= questions.length) {
       setCurrentQuestion((prevCurrent) => prevCurrent - 1);
     }
   }
 
-  //calculate the score of the quiz
-  const percentage =
-    questions.length > 0 ? ((currentQuestion + 1) / questions.length) * 100 : 0;
-
   // submit quiz
-  async function submitQuiz() {
+  async function submit() {
     const { uid } = currentUser;
+
     const db = getDatabase();
     const resultRef = ref(db, `result/${uid}`);
+
     await set(resultRef, {
       [id]: qna,
     });
+
     history.push({
       pathname: `/result/${id}`,
       state: {
@@ -89,10 +88,14 @@ export default function Quiz() {
     });
   }
 
+  // calculate percentage of progress
+  const percentage =
+    questions.length > 0 ? ((currentQuestion + 1) / questions.length) * 100 : 0;
+
   return (
     <>
-      {loading && <p>Loading...</p>}
-      {error && <p>Error!</p>}
+      {loading && <div>Loading ...</div>}
+      {error && <div>There was an error!</div>}
       {!loading && !error && qna && qna.length > 0 && (
         <>
           <h1>{qna[currentQuestion].title}</h1>
@@ -105,10 +108,10 @@ export default function Quiz() {
           <ProgressBar
             next={nextQuestion}
             prev={prevQuestion}
+            submit={submit}
             progress={percentage}
-            submit={submitQuiz}
           />
-          <MiniPlayer />
+          <MiniPlayer id={id} title={qna[currentQuestion].title} />
         </>
       )}
     </>
