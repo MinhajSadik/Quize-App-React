@@ -1,15 +1,16 @@
 import _ from "lodash";
 import React from "react";
-import { useHistory, useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import useAnswers from "../../Hooks/useAnswers";
 import Analysis from "../Analysis";
 import Summary from "../Summary";
 
 export default function Result() {
   const { id } = useParams();
-  const { location } = useHistory();
+  const { location } = useLocation();
   const { state } = location;
   const { qna } = state;
+
   const { loading, error, answers } = useAnswers(id);
   function calculate() {
     let score = 0;
